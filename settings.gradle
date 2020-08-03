@@ -1,0 +1,3 @@
+include ':chartview'
+include ':app'
+rootProject.name = "Android-ChartView"
