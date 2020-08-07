@@ -25,22 +25,52 @@ public class MainActivity extends AppCompatActivity {
         List<CircleChartData> dataList = new ArrayList<>();
         CircleChartData data1 = new CircleChartData(100.0,
                 Color.RED,
-                new CircleChartData.TextData("100.0", 0xEEEEEE, 13, true),
-                new CircleChartData.TextData("unit", 0xEEEEEE, 13, true),
-                new CircleChartData.TextData("explain", 0xEEEEEE, 13, true));
-        CircleChartData data2 = new CircleChartData(200.0,
+                "100.0",
+                "unit",
+                "explain");
+        dataList.add(data1);
+        CircleChartData data2 = new CircleChartData(100.0,
                 Color.BLUE,
-                new CircleChartData.TextData("200.0", 0xEEEEEE, 13, true),
-                new CircleChartData.TextData("unit", 0xEEEEEE, 13, true),
-                new CircleChartData.TextData("explain", 0xEEEEEE, 13, true));
+                "200.0",
+                "unit",
+                "explain");
+        dataList.add(data2);
         CircleChartData data3 = new CircleChartData(100.0,
                 Color.BLACK,
-                new CircleChartData.TextData("300.0", 0xEEEEEE, 13, true),
-                new CircleChartData.TextData("unit", 0xEEEEEE, 13, true),
-                new CircleChartData.TextData("explain", 0xEEEEEE, 13, true));
-        dataList.add(data1);
-        dataList.add(data2);
+                "300.0",
+                "unit",
+                "explain");
         dataList.add(data3);
+//        CircleChartData data4 = new CircleChartData(100.0,
+//                Color.DKGRAY,
+//                "300.0",
+//                "unit",
+//                "explain");
+//        dataList.add(data4);
+//        CircleChartData data5 = new CircleChartData(100.0,
+//                Color.GRAY,
+//                "300.0",
+//                "unit",
+//                "explain");
+//        dataList.add(data5);
+//        CircleChartData data6 = new CircleChartData(100.0,
+//                Color.LTGRAY,
+//                "300.0",
+//                "unit",
+//                "explain");
+//        dataList.add(data6);
+//        CircleChartData data7 = new CircleChartData(100.0,
+//                Color.YELLOW,
+//                "300.0",
+//                "unit",
+//                "explain");
+//        dataList.add(data7);
+//        CircleChartData data8 = new CircleChartData(100.0,
+//                Color.CYAN,
+//                "300.0",
+//                "unit",
+//                "explain");
+//        dataList.add(data8);
 
         view.updateData(null, dataList);
     }

@@ -2,16 +2,15 @@ package cc.bear3.util.chartview.circle;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Path;
+import android.graphics.PointF;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.View;
 
 import androidx.annotation.Nullable;
 
-import java.text.NumberFormat;
 import java.util.List;
 
 /**
@@ -19,23 +18,33 @@ import java.util.List;
  */
 
 public class CircleChartView extends View {
-    /**
-     * 默认起点扇形角度
-     */
-    private static final float mStartAngle = -90;
-    /**
-     * 终点扇形角度
-     */
-    private float mEndAngle = mStartAngle;
-    /**
-     * 圈环的宽度
-     */
+    private static final float mStartAngle = -90;           // 默认起点扇形角度
+
+    // 圈环的宽度
     private float mCircleWidth = 0;
     private float mCircleRadius;
-    /**
-     * 圆点的半径
-     */
+    // 圆点的半径
     private float mDotRadius = 6f;
+    private float mDotOutRadius = 8f;
+    private float mDotMargin = 2f;
+    private float mDotOutAlpha = 0.25f;
+
+    private float mValueMarginStart = 6f;
+    private float mValueMarginBottom = 6f;
+    private float mExplainMargin = 6f;
+    private float mUnitMargin = 4f;
+
+    private float mLineTurnMargin = 30f;
+    private float mLineWidth = 2f;
+
+    private int mValueColor = 0xFF333333;
+    private float mValueSize = 24;
+
+    private int mUnitColor = 0xFF666666;
+    private float mUnitSize = 16;
+
+    private int mExplainColor = 0xFF666666;
+    private float mExplainSize = 16;
     /**
      * 中心x坐标
      */
@@ -54,6 +63,9 @@ public class CircleChartView extends View {
     private Paint mTextPaint;
 
     private RectF mRectF = new RectF();
+
+    private PointF tempPoint = new PointF();
+    private Rect bounds = new Rect();
 
     private CircleChartData centerData;
     private List<CircleChartData> dataList;
@@ -134,6 +146,7 @@ public class CircleChartView extends View {
         mRectF.bottom = centerY + mCircleRadius;
 
         mCircleWidth = mCircleRadius / 8f;
+//        mCircleWidth = 1f;
         mPaint.setStrokeWidth(mCircleWidth);
     }
 
@@ -149,20 +162,95 @@ public class CircleChartView extends View {
         // 画出每段圆环
         if (dataList != null && dataList.size() > 0) {
             int size = dataList.size();
-            mEndAngle = mStartAngle;
+            float endAngle = mStartAngle;
             for (int index = 0; index < size; index++) {
                 CircleChartData temp = dataList.get(index);
                 // 画圆弧
                 mPaint.setColor(temp.getColor());
-                canvas.drawArc(mRectF, mEndAngle, temp.getAngle(), false, mPaint);
+                canvas.drawArc(mRectF, endAngle, temp.getAngle(), false, mPaint);
 
-                mEndAngle += temp.getAngle();
+                endAngle += temp.getAngle();
 
-                // 绘制文字说明
-                float x = (float) (centerX + mCircleRadius * Math.cos((temp.getAngle() / 2 - 90) * Math.PI / 180));
-                float y = (float) (centerY + mCircleRadius * Math.sin((temp.getAngle() / 2 - 90) * Math.PI / 180));
+                // 获取圆弧中心点
+                float centerAngle = endAngle - temp.getAngle() / 2f;
+                float x = (float) (centerX + mCircleRadius * Math.cos(Math.toRadians(centerAngle)));
+                float y = (float) (centerY + mCircleRadius * Math.sin(Math.toRadians(centerAngle)));
 
-                drawText(canvas, temp, x, y);
+                // 获取dot的中心点
+                getOffsetPoint(x, y, mCircleWidth / 2f + mDotMargin + mDotOutRadius, tempPoint);
+                // 画出小圆圈 - 外部
+                mTextPaint.setStyle(Paint.Style.FILL);
+                mTextPaint.setColor(temp.getColor());
+                mTextPaint.setAlpha((int) (mDotOutAlpha * 255));
+                canvas.drawCircle(tempPoint.x, tempPoint.y, mDotOutRadius, mTextPaint);
+                //  - 内部
+                mTextPaint.setAlpha(255);
+                canvas.drawCircle(tempPoint.x, tempPoint.y, mDotRadius, mTextPaint);
+
+                // 获取Dot外部坐标点
+                getOffsetPoint(tempPoint.x, tempPoint.y, mDotRadius, tempPoint);
+
+                // 测量value文字
+                mTextPaint.setTextSize(mValueSize);
+                mTextPaint.getTextBounds(temp.getValueString(), 0, temp.getValueString().length(), bounds);
+                int valueW = bounds.right - bounds.left;
+                int valueH = bounds.bottom - bounds.top;
+
+                // 测量Unit文字
+                mTextPaint.setTextSize(mUnitSize);
+                mTextPaint.getTextBounds(temp.getUnit(), 0, temp.getUnit().length(), bounds);
+                int unitW = bounds.right - bounds.left;
+                int unitH = bounds.bottom - bounds.top;
+
+                // 画出折线
+                // 获取折线转折点
+                mTextPaint.setStyle(Paint.Style.STROKE);
+                mTextPaint.setColor(temp.getColor());
+                mTextPaint.setStrokeWidth(mLineWidth);
+                float startX = tempPoint.x;
+                float startY = tempPoint.y;
+                getOffsetPoint(tempPoint.x, tempPoint.y, mLineTurnMargin, tempPoint);
+                // 第一段
+                canvas.drawLine(startX, startY, tempPoint.x, tempPoint.y, mTextPaint);
+                // 第二段
+                startX = tempPoint.x;
+                startY = tempPoint.y;
+                getOffsetPoint(startX, startY, mValueMarginStart + valueW + mUnitMargin + unitW, tempPoint);
+                canvas.drawLine(startX, startY, tempPoint.x, startY, mTextPaint);
+
+                float endX = tempPoint.x;
+                mTextPaint.setTextAlign(Paint.Align.CENTER);
+                // value
+                mTextPaint.setTextSize(mValueSize);
+                mTextPaint.setColor(mValueColor);
+                if (startX >= centerX) {
+                    canvas.drawText(temp.getValueString(), startX + mValueMarginStart + valueW / 2f, startY - mValueMarginBottom - valueH / 2f, mTextPaint);
+                } else {
+                    canvas.drawText(temp.getValueString(), endX + valueW / 2f, startY - mValueMarginBottom - valueH / 2f, mTextPaint);
+                }
+                // unit
+                mTextPaint.setTextSize(mUnitSize);
+                mTextPaint.setColor(mUnitColor);
+                if (startX >= centerX) {
+                    canvas.drawText(temp.getUnit(), startX + mValueMarginStart + valueW + mUnitMargin + unitW / 2f, startY - mValueMarginBottom - unitH / 2f, mTextPaint);
+                } else {
+                    canvas.drawText(temp.getUnit(), endX + mUnitMargin + valueW + unitW / 2f, startY - mValueMarginBottom - unitH / 2f, mTextPaint);
+                }
+                // explain
+                mTextPaint.setTextSize(mExplainSize);
+                mTextPaint.setColor(mExplainColor);
+                mTextPaint.getTextBounds(temp.getExplain(), 0, temp.getExplain().length(), bounds);
+                int explainW = bounds.right - bounds.left;
+                int explainH = bounds.bottom - bounds.top;
+                if (startX >= centerX) {
+                    canvas.drawText(temp.getExplain(), endX - explainW / 2f, startY + mExplainMargin + explainH / 2f, mTextPaint);
+                } else {
+                    canvas.drawText(temp.getExplain(), endX + explainW / 2f, startY + mExplainMargin + explainH / 2f, mTextPaint);
+                }
+
+                // 中心文字
+
+//                drawText(canvas, temp, x, y);
             }
         }
 
@@ -213,6 +301,14 @@ public class CircleChartView extends View {
 //        drawText(canvas, reminderText + getPer(360 - mSweepAngle, 360), textX2, textY2, mTextPaint);
 
         canvas.restore();
+    }
+
+    private float getOffsetX(float startX, float offset) {
+        if (startX >= centerX) {
+            return startX + offset;
+        } else {
+            return startX - offset;
+        }
     }
 
 //    /**
@@ -340,9 +436,42 @@ public class CircleChartView extends View {
             textX = endX1;
             textY = endY2 + 30;
         }
-//        canvas.drawCircle(firstX, firstY, mDotRadius, paint);
-//        canvas.drawLine(firstX, firstY, endX1, endY1, paint);
-//        canvas.drawLine(endX1, endY1, endX2, endY2, paint);
+        mTextPaint.setColor(data.getColor());
+
+        canvas.drawCircle(firstX, firstY, mDotRadius, mTextPaint);
+        canvas.drawLine(firstX, firstY, endX1, endY1, mTextPaint);
+        canvas.drawLine(endX1, endY1, endX2, endY2, mTextPaint);
 //        canvas.drawText(string, textX, textY, paint);
+    }
+
+    /**
+     * 获取偏移后的点的坐标
+     *
+     * @param oX     起始坐标x
+     * @param oY     起始坐标y
+     * @param offset 便宜量
+     */
+    private void getOffsetPoint(float oX, float oY, float offset, PointF target) {
+        if ((oX - centerX) >= 0) {
+            if ((oY - centerY) >= 0) {
+                // 第一象限
+                target.x = oX + offset;
+                target.y = oY + offset;
+            } else {
+                // 第二象限
+                target.x = oX + offset;
+                target.y = oY - offset;
+            }
+        } else {
+            if ((oY - centerY) < 0) {
+                // 第三象限
+                target.x = oX - offset;
+                target.y = oY - offset;
+            } else {
+                // 第四象限
+                target.x = oX - offset;
+                target.y = oY + offset;
+            }
+        }
     }
 }

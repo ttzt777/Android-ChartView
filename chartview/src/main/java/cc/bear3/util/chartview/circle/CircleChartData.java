@@ -1,7 +1,6 @@
 package cc.bear3.util.chartview.circle;
 
-import android.content.res.Resources;
-import android.util.TypedValue;
+import androidx.annotation.NonNull;
 
 /**
  * 圆形图标数据封装
@@ -12,12 +11,15 @@ import android.util.TypedValue;
 public class CircleChartData {
     private double value;
     private int color;
-    private TextData valueString;
-    private TextData unit;
-    private TextData explain;
+    private @NonNull
+    String valueString;
+    private @NonNull
+    String unit;
+    private @NonNull
+    String explain;
     private float angle;      // 用于后面参与计算，不用设置初值
 
-    public CircleChartData(double value, int color, TextData valueString, TextData unit, TextData explain) {
+    public CircleChartData(double value, int color, @NonNull String valueString, @NonNull String unit, @NonNull String explain) {
         this.value = value;
         this.color = color;
         this.valueString = valueString;
@@ -41,27 +43,27 @@ public class CircleChartData {
         this.color = color;
     }
 
-    public TextData getValueString() {
+    public String getValueString() {
         return valueString;
     }
 
-    public void setValueString(TextData valueString) {
+    public void setValueString(String valueString) {
         this.valueString = valueString;
     }
 
-    public TextData getUnit() {
+    public String getUnit() {
         return unit;
     }
 
-    public void setUnit(TextData unit) {
+    public void setUnit(String unit) {
         this.unit = unit;
     }
 
-    public TextData getExplain() {
+    public String getExplain() {
         return explain;
     }
 
-    public void setExplain(TextData explain) {
+    public void setExplain(String explain) {
         this.explain = explain;
     }
 
@@ -71,37 +73,5 @@ public class CircleChartData {
 
     public void setAngle(float angle) {
         this.angle = angle;
-    }
-
-    public static class TextData {
-        private String text;
-        private int color;
-        private int size;
-
-        public TextData(String text, int color, int size) {
-            this(text, color, size, false);
-        }
-
-        public TextData(String text, int color, int size, boolean isSizeDp) {
-            this.text = text;
-            this.color = color;
-            if (isSizeDp) {
-                this.size = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, size, Resources.getSystem().getDisplayMetrics());
-            } else {
-                this.size = size;
-            }
-        }
-
-        public String getText() {
-            return text;
-        }
-
-        public int getColor() {
-            return color;
-        }
-
-        public int getSize() {
-            return size;
-        }
     }
 }
