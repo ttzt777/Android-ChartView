@@ -23,23 +23,23 @@ public class MainActivity extends AppCompatActivity {
         CircleChartView view = findViewById(R.id.view);
 
         List<CircleChartData> dataList = new ArrayList<>();
-        CircleChartData data1 = new CircleChartData(100.0,
-                Color.RED,
-                "100.0",
-                "unit",
-                "explain");
+        CircleChartData data1 = new CircleChartData(2,
+                0xFF5E8CFF,
+                "2.35728",
+                "BTC",
+                "昨日电费支出");
         dataList.add(data1);
-        CircleChartData data2 = new CircleChartData(100.0,
-                Color.BLUE,
-                "200.0",
-                "unit",
-                "explain");
+        CircleChartData data2 = new CircleChartData(1,
+                0xFF0EC8B7,
+                "2.45453",
+                "BTC",
+                "昨日管理费支出");
         dataList.add(data2);
-        CircleChartData data3 = new CircleChartData(100.0,
-                Color.BLACK,
-                "300.0",
-                "unit",
-                "explain");
+        CircleChartData data3 = new CircleChartData(1,
+                0xFFF4B945,
+                "5.5455454",
+                "BTC",
+                "昨日总收益");
         dataList.add(data3);
 //        CircleChartData data4 = new CircleChartData(100.0,
 //                Color.DKGRAY,
@@ -72,6 +72,12 @@ public class MainActivity extends AppCompatActivity {
 //                "explain");
 //        dataList.add(data8);
 
-        view.updateData(null, dataList);
+        CircleChartData center = new CircleChartData(5.4556165,
+                Color.CYAN,
+                "5.4556165",
+                "BTC",
+                "昨日总产出");
+
+        view.updateData(center, dataList);
     }
 }

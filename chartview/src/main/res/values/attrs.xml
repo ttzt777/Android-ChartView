@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CircleChartView">
+        <attr name="ccv_circle_width" format="dimension" />
+
+        <attr name="ccv_dot_margin" format="dimension" />
+        <attr name="ccv_dot_radius_in" format="dimension" />
+        <attr name="ccv_dot_radius_out" format="dimension" />
+        <attr name="ccv_dot_out_alpha" format="float" />
+
+        <attr name="ccv_line_turn_margin" format="dimension" />
+        <attr name="ccv_line_width" format="dimension" />
+
+        <attr name="ccv_value_size" format="dimension" />
+        <attr name="ccv_value_color" format="color" />
+        <attr name="ccv_value_margin_start" format="dimension" />
+        <attr name="ccv_value_margin_bottom" format="dimension" />
+
+        <attr name="ccv_unit_size" format="dimension" />
+        <attr name="ccv_unit_color" format="color" />
+        <attr name="ccv_unit_margin" format="dimension" />
+
+        <attr name="ccv_explain_size" format="dimension" />
+        <attr name="ccv_explain_color" format="color" />
+        <attr name="ccv_explain_margin" format="dimension" />
+    </declare-styleable>
+</resources>
