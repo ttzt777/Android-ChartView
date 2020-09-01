@@ -24,4 +24,9 @@
         <attr name="ccv_explain_color" format="color" />
         <attr name="ccv_explain_margin" format="dimension" />
     </declare-styleable>
+
+    <declare-styleable name="DoughnutView">
+        <attr name="dv_circle_width" format="dimension" />
+    </declare-styleable>
+
 </resources>

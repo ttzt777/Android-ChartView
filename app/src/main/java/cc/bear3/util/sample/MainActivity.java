@@ -12,6 +12,8 @@ import java.util.List;
 
 import cc.bear3.util.chartview.circle.CircleChartData;
 import cc.bear3.util.chartview.circle.CircleChartView;
+import cc.bear3.util.chartview.doughnut.DoughnutData;
+import cc.bear3.util.chartview.doughnut.DoughnutView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -23,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
         CircleChartView view = findViewById(R.id.view);
 
         List<CircleChartData> dataList = new ArrayList<>();
-        CircleChartData data1 = new CircleChartData(2,
+        CircleChartData data1 = new CircleChartData(1,
                 0xFF5E8CFF,
                 "2.35728",
                 "BTC",
@@ -35,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
                 "BTC",
                 "昨日管理费支出");
         dataList.add(data2);
-        CircleChartData data3 = new CircleChartData(1,
+        CircleChartData data3 = new CircleChartData(10,
                 0xFFF4B945,
                 "5.5455454",
                 "BTC",
@@ -79,5 +81,23 @@ public class MainActivity extends AppCompatActivity {
                 "昨日总产出");
 
         view.updateData(center, dataList);
+
+        showDoughnut();
+    }
+
+    private void showDoughnut() {
+        DoughnutView view = findViewById(R.id.doughnut);
+        List<DoughnutData> dataList  = new ArrayList<>();
+        DoughnutData data1 = new DoughnutData(1,
+                0xFF5E8CFF);
+        dataList.add(data1);
+        DoughnutData data2 = new DoughnutData(1,
+                0xFF0EC8B7);
+        dataList.add(data2);
+        DoughnutData data3 = new DoughnutData(10,
+                0xFFF4B945);
+        dataList.add(data3);
+
+        view.updateData(dataList);
     }
 }

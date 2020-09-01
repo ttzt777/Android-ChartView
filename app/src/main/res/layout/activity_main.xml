@@ -33,4 +33,13 @@
         app:ccv_explain_margin="2dp"
         android:background="#FFFFFF"  />
 
+    <cc.bear3.util.chartview.doughnut.DoughnutView
+        android:id="@+id/doughnut"
+        android:layout_width="match_parent"
+        android:background="#FFFFFF"
+        android:layout_marginTop="20dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="20dp"
+        android:layout_height="160dp" />
+
 </LinearLayout>
